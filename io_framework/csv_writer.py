@@ -5,7 +5,7 @@
 
     Author: Alexander Dmitriev
 """
-from pandas import DataFrame
+import pandas as pd
 from influxdb import DataFrameClient
 from resources.config import RESOURCES_DIR
 
@@ -26,7 +26,7 @@ class CsvWriter:
         :param username:
         :param password:
         :param database: database name
-        :param new_cvs_file_name: a path to a csv file, if specified (e.g "\temp.cvs")
+        :param new_cvs_file_name: a path to a csv file, if specified (e.g "\\temp.cvs")
         :param new_measurement: a measurement name specified from JSON object returned by database
         """
         self._client = DataFrameClient(host, port, username, password, database)
@@ -56,3 +56,21 @@ class CsvWriter:
             return True
         print("The database is empty. Nothing to save to CSV file.")
         return False
+
+    def csv_to_data(self, write_tags=None):
+        """
+        Parses a CSV file and then writes it into the database.
+        :param write tags: that are written with the DataFrame to the DB.
+        """
+        # TODO error check and verify before writing.
+        # Add debug messages for a debug mode.
+        df = pd.read_csv(self._csv_file_path)
+
+        # TODO write_tags needs to be parsed and verified.
+        # Protocol needs to be specified at init.
+        # This write with tags check might be pointless.
+        if write_tags:
+            self._client.write_points(df,self._database, write_tags,'json')
+        else:
+            self._client.write_points(df,self._database,'json')
+
