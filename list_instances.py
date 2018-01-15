@@ -41,7 +41,5 @@ def create_security_group(group_name, from_port, source, description, to_port):
             }
         ])
 
-
-create_security_group("Test Group 2", 8086, '131.252.0.0/16', 'PSU Range IP', 8086)
 list_security_groups()
 
