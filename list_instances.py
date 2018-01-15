@@ -41,5 +41,4 @@ def create_security_group(group_name, from_port, source, description, to_port):
             }
         ])
 
-list_security_groups()
 
