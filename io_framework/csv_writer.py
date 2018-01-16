@@ -47,7 +47,7 @@ class CsvWriter:
         result_set = self._client.query(db_query, chunked=is_chunked)
         if 0 < len(result_set):
             df = result_set[self._measurement]
-            if not isinstance(df, DataFrame):
+            if not isinstance(df, pd.DataFrame):
                 print("Error reading the data from database. Please test this query in Chronograf.")
                 return False
             if tags_to_drop:
