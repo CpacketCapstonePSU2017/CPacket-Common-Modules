@@ -44,7 +44,7 @@ class TesterDbConnector(TestCase):
             print("\ntest_connect_to_db_remote PASSED")
             print("***************************************************")
         except ConnectionError as error:
-            print("Test: Failed - {0}\n".format(error))
+            self.fail("Test: Failed - {0}\n".format(error))
 
     # will put on hold for now until figure out the way to use local InfluxDB on Travis
     def connect_to_db_local(self):
