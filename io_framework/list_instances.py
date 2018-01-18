@@ -21,9 +21,9 @@ def list_security_groups():
 
 # this function creates a security group with given ip permissions (more aspects of the security group can be edited as well)
 
-def create_security_group(group_name, from_port, source, description, to_port):
+def create_security_group(group_name, group_description, from_port, source, description, to_port):
     ec2 = boto3.client('ec2')
-    response = ec2.create_security_group(GroupName=group_name, Description="This was created by the aws connector.")
+    response = ec2.create_security_group(GroupName=group_name, Description=group_description)
     security_group_id = response['GroupId']
     ec2.authorize_security_group_ingress(
         GroupId=security_group_id,
