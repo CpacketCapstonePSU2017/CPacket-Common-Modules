@@ -25,7 +25,7 @@ install:
 
   
 script:
-  - nosetests --verbose --with-coverage --cover-package=tests
+  - nosetests -s --verbose --with-coverage --cover-package=tests
 
 after_success:
   - coveralls
