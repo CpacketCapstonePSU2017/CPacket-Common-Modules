@@ -2,7 +2,7 @@ from influxdb import InfluxDBClient
 from resources.config import RESOURCES_DIR
 import progressbar
 
-def csv_file_to_db(host, port, username, password, database):
+def csv_file_to_db(host, port, username, password, database, filename):
     client = InfluxDBClient(host, port, username, password, database)
     client.drop_database(database)
     client.create_database(database)
@@ -10,7 +10,7 @@ def csv_file_to_db(host, port, username, password, database):
     itterator = 0
     widgets=[progressbar.Percentage(), progressbar.Bar(), progressbar.ETA()]
     print("Starting to write cvs data to database: {}".format(database))
-    with open(RESOURCES_DIR + '\\temp.csv') as f:
+    with open(filename) as f:
         data = [x.split(',') for x in f.readlines()]
         bar = progressbar.ProgressBar(widgets=widgets, max_value=len(data)-1).start()
         labels = data[0]
@@ -44,5 +44,5 @@ def csv_file_to_db(host, port, username, password, database):
         print("Finished writing csv file to database")
 
 
-def write_data(host, port, username, password, database):
-    csv_file_to_db(host, port, username, password, database)
+def write_data(host, port, username, password, database, filename):
+    csv_file_to_db(host, port, username, password, database, filename)

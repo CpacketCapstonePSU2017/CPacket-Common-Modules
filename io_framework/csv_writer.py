@@ -19,6 +19,9 @@ class CsvWriter:
     _influxdb_client = None
     _measurement = None
     _host = None
+    _port = 0
+    _username = None
+    _password = None
     _database = None
 
     def __init__(self, host, port, username, password, database,
@@ -38,6 +41,9 @@ class CsvWriter:
         self._csv_file_path = RESOURCES_DIR + "\\" + new_cvs_file_name
         self._measurement = new_measurement
         self._host = host
+        self._port = port
+        self._username = username
+        self._password = password
         self._database = database
 
     def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=','):
@@ -78,6 +84,6 @@ class CsvWriter:
         self._client.write_points(df, measurement='per15min', protocol='json')
         print('done')
 
-    def csv_file_to_db(self, host, port, username, password, database):
-        write_data(host=host, port=port, username=username,
-                   password=password, database=database)
+    def csv_file_to_db(self):
+        write_data(host=self._host, port=self._port, username=self._username,
+                   password=self._password, database=self._database, filename=self._csv_file_path)
