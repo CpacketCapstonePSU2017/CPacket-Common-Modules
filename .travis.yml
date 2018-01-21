@@ -24,10 +24,8 @@ install:
   #- pip install --upgrade git+git://github.com/antoinecarme/pyaf.git #PyAF
   #- pip install pyaf
 
+  - nosetests -s --verbose --with-coverage --cover-package=tests
   
-script:
-  - nosetests --verbose --with-coverage --cover-package=tests
-
 after_success:
   - coveralls
 
