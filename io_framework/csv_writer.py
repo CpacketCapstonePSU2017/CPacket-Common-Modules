@@ -7,12 +7,16 @@
 """
 import pandas as pd
 from influxdb import DataFrameClient
+from influxdb import InfluxDBClient
+
+from io_framework.csv_file_to_db import write_data
 from resources.config import RESOURCES_DIR
 
 
 class CsvWriter:
     _csv_file_path = None
     _client = None
+    _influxdb_client = None
     _measurement = None
     _host = None
     _database = None
@@ -30,6 +34,7 @@ class CsvWriter:
         :param new_measurement: a measurement name specified from JSON object returned by database
         """
         self._client = DataFrameClient(host, port, username, password, database)
+        self._influxdb_client = InfluxDBClient(host, port, username, password, database)
         self._csv_file_path = RESOURCES_DIR + "\\" + new_cvs_file_name
         self._measurement = new_measurement
         self._host = host
@@ -64,13 +69,15 @@ class CsvWriter:
         """
         # TODO error check and verify before writing.
         # Add debug messages for a debug mode.
-        df = pd.read_csv(self._csv_file_path)
+        df = pd.read_csv(self._csv_file_path, index_col=0, parse_dates=[0])
+        df.dropna(axis=1, how='all', inplace=True)
+        df.fillna(value=0, inplace=True)
+        # df.reset_index().set_index('timestamps')
+        print("Reading csv file")
+        print(df.head())
+        self._client.write_points(df, measurement='per15min', protocol='json')
+        print('done')
 
-        # TODO write_tags needs to be parsed and verified.
-        # Protocol needs to be specified at init.
-        # This write with tags check might be pointless.
-        if write_tags:
-            self._client.write_points(df,self._database, write_tags,'json')
-        else:
-            self._client.write_points(df,self._database,'json')
-
+    def csv_file_to_db(self, host, port, username, password, database):
+        write_data(host=host, port=port, username=username,
+                   password=password, database=database)

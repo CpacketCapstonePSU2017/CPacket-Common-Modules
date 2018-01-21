@@ -17,6 +17,7 @@ install:
   - pip install coverage
   - pip install coveralls
   - pip install nose
+  - pip install progressbar2
   #- pip install
   #- pip install sklearn matplotlib pydot dill pathos sqlalchemy #PyAF deppendencies along with scipy and pandas
   #- pip install --upgrade git+git://github.com/antoinecarme/pyaf.git #PyAF
