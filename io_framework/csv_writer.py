@@ -5,16 +5,23 @@
 
     Author: Alexander Dmitriev
 """
-from pandas import DataFrame
+import pandas as pd
 from influxdb import DataFrameClient
+from influxdb import InfluxDBClient
+
+from io_framework.csv_file_to_db import write_data
 from resources.config import RESOURCES_DIR
 
 
 class CsvWriter:
     _csv_file_path = None
     _client = None
+    _influxdb_client = None
     _measurement = None
     _host = None
+    _port = 0
+    _username = None
+    _password = None
     _database = None
 
     def __init__(self, host, port, username, password, database,
@@ -26,13 +33,17 @@ class CsvWriter:
         :param username:
         :param password:
         :param database: database name
-        :param new_cvs_file_name: a path to a csv file, if specified (e.g "\temp.cvs")
+        :param new_cvs_file_name: a path to a csv file, if specified (e.g "\\temp.cvs")
         :param new_measurement: a measurement name specified from JSON object returned by database
         """
         self._client = DataFrameClient(host, port, username, password, database)
+        self._influxdb_client = InfluxDBClient(host, port, username, password, database)
         self._csv_file_path = RESOURCES_DIR + "\\" + new_cvs_file_name
         self._measurement = new_measurement
         self._host = host
+        self._port = port
+        self._username = username
+        self._password = password
         self._database = database
 
     def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=','):
@@ -47,7 +58,7 @@ class CsvWriter:
         result_set = self._client.query(db_query, chunked=is_chunked)
         if 0 < len(result_set):
             df = result_set[self._measurement]
-            if not isinstance(df, DataFrame):
+            if not isinstance(df, pd.DataFrame):
                 print("Error reading the data from database. Please test this query in Chronograf.")
                 return False
             if tags_to_drop:
@@ -56,3 +67,23 @@ class CsvWriter:
             return True
         print("The database is empty. Nothing to save to CSV file.")
         return False
+
+    def csv_to_data(self, write_tags=None):
+        """
+        Parses a CSV file and then writes it into the database.
+        :param write tags: that are written with the DataFrame to the DB.
+        """
+        # TODO error check and verify before writing.
+        # Add debug messages for a debug mode.
+        df = pd.read_csv(self._csv_file_path, index_col=0, parse_dates=[0])
+        df.dropna(axis=1, how='all', inplace=True)
+        df.fillna(value=0, inplace=True)
+        # df.reset_index().set_index('timestamps')
+        print("Reading csv file")
+        print(df.head())
+        self._client.write_points(df, measurement='per15min', protocol='json')
+        print('done')
+
+    def csv_file_to_db(self):
+        write_data(host=self._host, port=self._port, username=self._username,
+                   password=self._password, database=self._database, filename=self._csv_file_path)

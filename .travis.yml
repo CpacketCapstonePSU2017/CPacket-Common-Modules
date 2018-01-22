@@ -17,8 +17,10 @@ install:
   - pip install coverage
   - pip install coveralls
   - pip install nose
+  - pip install progressbar2
   - pip install boto3
   - pip install awscli --upgrade --user
+
   #- pip install
   #- pip install sklearn matplotlib pydot dill pathos sqlalchemy #PyAF deppendencies along with scipy and pandas
   #- pip install --upgrade git+git://github.com/antoinecarme/pyaf.git #PyAF
@@ -26,7 +28,7 @@ install:
 
 script:
   - nosetests -s --verbose --with-coverage --cover-package=tests
-  
+
 after_success:
   - coveralls
 
