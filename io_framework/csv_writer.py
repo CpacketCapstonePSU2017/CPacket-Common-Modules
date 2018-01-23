@@ -25,7 +25,7 @@ class CsvWriter:
     _database = None
 
     def __init__(self, host, port, username, password, database,
-                 new_measurement="per15min", new_cvs_file_name="\\temp.csv"):
+                 new_measurement="per15min", new_cvs_file_name="temp.csv"):
         """
         The parameters for setting up the connection to database should come from InfluxDB Connector
         :param host:
@@ -38,7 +38,7 @@ class CsvWriter:
         """
         self._client = DataFrameClient(host, port, username, password, database)
         self._influxdb_client = InfluxDBClient(host, port, username, password, database)
-        self._csv_file_path = RESOURCES_DIR + "\\" + new_cvs_file_name
+        self._csv_file_path = RESOURCES_DIR + "/" + new_cvs_file_name
         self._measurement = new_measurement
         self._host = host
         self._port = port
@@ -46,7 +46,7 @@ class CsvWriter:
         self._password = password
         self._database = database
 
-    def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=','):
+    def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=',', new_csv_file_name=_csv_file_path):
         """
         Writes the new CSV file from scratch using the data that comes
         from client in the form of ResultSet. The file is stored in "resources" folder.
@@ -63,7 +63,7 @@ class CsvWriter:
                 return False
             if tags_to_drop:
                 df = df.drop(tags_to_drop, axis=1)
-            df.to_csv(self._csv_file_path, sep=separator)
+            df.to_csv(new_csv_file_name, sep=separator)
             return True
         print("The database is empty. Nothing to save to CSV file.")
         return False
