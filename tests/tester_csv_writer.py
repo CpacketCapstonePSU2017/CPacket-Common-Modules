@@ -1,11 +1,9 @@
 from io_framework.csv_writer import CsvWriter
 from unittest import TestCase
-import pandas as pd
-from influxdb import DataFrameClient, InfluxDBClient
 from resources.config import RESOURCES_DIR
-import csv
 import os
 import filecmp
+
 
 class TesterCsvWriter(TestCase):
     _csv_file_path = None
@@ -29,6 +27,6 @@ class TesterCsvWriter(TestCase):
         test_csv_write3 = CsvWriter(self.host, self.port, self.username, self.password, self.database)
         test_csv_write3.csv_file_to_db()
         test_csv_write3.data_to_csv_file('select * from per15min', new_csv_file_name=data_return_path)
-        self.assertTrue(filecmp.cmp(data_return_path, initial_data_path,shallow=False),
+        self.assertTrue(filecmp.cmp(data_return_path, initial_data_path, shallow=False),
                         "Integration test failed, file is not the same")
         os.remove(data_return_path)
