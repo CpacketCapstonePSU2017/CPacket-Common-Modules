@@ -11,20 +11,23 @@ before_install:
   - conda update --q --y conda 
 
 install:
-  - conda install --yes python=$PYTHON_VERSION pip # numpy pandas scipy scikit-learn statsmodels theano keras tensorflow nose
+  - conda install --yes python=$PYTHON_VERSION pip pandas # numpy scipy scikit-learn statsmodels theano keras tensorflow nose
+  - pip install --upgrade git+git://github.com/influxdata/influxdb-python.git #InfluxDB
+  - pip install influxdb
   - pip install coverage
   - pip install coveralls
   - pip install nose
+  - pip install progressbar2
+  - pip install boto3
+  - pip install awscli --upgrade --user
+
   #- pip install
   #- pip install sklearn matplotlib pydot dill pathos sqlalchemy #PyAF deppendencies along with scipy and pandas
   #- pip install --upgrade git+git://github.com/antoinecarme/pyaf.git #PyAF
   #- pip install pyaf
-  #- pip install --upgrade git+git://github.com/influxdata/influxdb-python.git #InfluxDB
-  #- pip install influxdb
-  
+
 script:
-  - python main.py
-  #- nosetests --verbose --with-coverage --cover-package=tests
+  - nosetests -s --verbose --with-coverage --cover-package=tests
 
 after_success:
   - coveralls
