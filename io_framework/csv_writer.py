@@ -47,7 +47,7 @@ class CsvWriter:
         self._database = database
 
     def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=',',
-                         new_csv_file_name='', measurement_to_use='per15min'):
+                         new_csv_file_name='', measurement_to_use=''):
         """
         Writes the new CSV file from scratch using the data that comes
         from client in the form of ResultSet. The file is stored in "resources" folder.
@@ -58,6 +58,8 @@ class CsvWriter:
         """
         if not new_csv_file_name:
             new_csv_file_name = self._csv_file_path
+        if not measurement_to_use:
+            measurement_to_use = self._measurement
         result_set = self._client.query(db_query, chunked=is_chunked)
         if 0 < len(result_set):
             df = result_set[measurement_to_use]
