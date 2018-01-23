@@ -32,7 +32,7 @@ def csv_file_to_db(host, port, username, password, database, filename):
                     "measurement": "per15min",
                     "time": metric[0],
                     "fields": {
-                        "value": byte_value
+                        "avg_hrcrx_max_byt": byte_value
                     }
                 }
             ]
