@@ -13,6 +13,12 @@ class DistArraySizeTestCase(DistFunctionsTestCase):
     def runTest(self):
         self.assertEqual(len(self.test.Dist_Array),100)
 
+class DistArrayMaxTestCase(DistFunctionsTestCase):
+
+    def runTest(self):
+        for x in self.test.Dist_Array:
+            self.assertTrue(x <= 1.25 * 10000000)
+
 # runs the unit test
 if __name__ == '__main__':
     unittest.main();
