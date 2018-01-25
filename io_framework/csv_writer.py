@@ -8,7 +8,7 @@
 import pandas as pd
 from influxdb import DataFrameClient
 from influxdb import InfluxDBClient
-
+import os
 from io_framework.csv_file_to_db import write_data
 from resources.config import RESOURCES_DIR
 
@@ -19,10 +19,13 @@ class CsvWriter:
     _influxdb_client = None
     _measurement = None
     _host = None
+    _port = 0
+    _username = None
+    _password = None
     _database = None
 
     def __init__(self, host, port, username, password, database,
-                 new_measurement="per15min", new_cvs_file_name="\\temp.csv"):
+                 new_measurement="per15min", new_cvs_file_name="temp.csv"):
         """
         The parameters for setting up the connection to database should come from InfluxDB Connector
         :param host:
@@ -35,12 +38,16 @@ class CsvWriter:
         """
         self._client = DataFrameClient(host, port, username, password, database)
         self._influxdb_client = InfluxDBClient(host, port, username, password, database)
-        self._csv_file_path = RESOURCES_DIR + "\\" + new_cvs_file_name
+        self._csv_file_path = os.path.join(RESOURCES_DIR,new_cvs_file_name)
         self._measurement = new_measurement
         self._host = host
+        self._port = port
+        self._username = username
+        self._password = password
         self._database = database
 
-    def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=','):
+    def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=',',
+                         new_csv_file_name='', measurement_to_use=''):
         """
         Writes the new CSV file from scratch using the data that comes
         from client in the form of ResultSet. The file is stored in "resources" folder.
@@ -49,35 +56,33 @@ class CsvWriter:
         :param is_chunked: is the data should be chunked
         :return: The success or failure
         """
+        if not new_csv_file_name:
+            new_csv_file_name = self._csv_file_path
+        if not measurement_to_use:
+            measurement_to_use = self._measurement
         result_set = self._client.query(db_query, chunked=is_chunked)
         if 0 < len(result_set):
-            df = result_set[self._measurement]
+            df = result_set[measurement_to_use]
             if not isinstance(df, pd.DataFrame):
                 print("Error reading the data from database. Please test this query in Chronograf.")
                 return False
             if tags_to_drop:
                 df = df.drop(tags_to_drop, axis=1)
-            df.to_csv(self._csv_file_path, sep=separator)
+            df.to_csv(new_csv_file_name, sep=separator)
             return True
         print("The database is empty. Nothing to save to CSV file.")
         return False
 
-    def csv_to_data(self, write_tags=None):
+    def csv_file_to_db(self, measurement_to_use='per15min', new_csv_file_name='',
+                       new_label_to_use='avg_hrcrx_max_byt', new_field_name_to_use='avg_hrcrx_max_byt', drop_db=False):
         """
-        Parses a CSV file and then writes it into the database.
-        :param write tags: that are written with the DataFrame to the DB.
+        Read the given csv file and write its content to database
+        :param measurement_to_use: choose a different measurement name for storing data
+        :return:
         """
-        # TODO error check and verify before writing.
-        # Add debug messages for a debug mode.
-        df = pd.read_csv(self._csv_file_path, index_col=0, parse_dates=[0])
-        df.dropna(axis=1, how='all', inplace=True)
-        df.fillna(value=0, inplace=True)
-        # df.reset_index().set_index('timestamps')
-        print("Reading csv file")
-        print(df.head())
-        self._client.write_points(df, measurement='per15min', protocol='json')
-        print('done')
-
-    def csv_file_to_db(self, host, port, username, password, database):
-        write_data(host=host, port=port, username=username,
-                   password=password, database=database)
+        if not new_csv_file_name:
+            new_csv_file_name = self._csv_file_path
+        write_data(host=self._host, port=self._port, username=self._username,
+                   password=self._password, database=self._database,
+                   filepath=new_csv_file_name, measurement=measurement_to_use,
+                   label_to_use=new_label_to_use, field_name_to_use=new_field_name_to_use, drop_db=drop_db)
