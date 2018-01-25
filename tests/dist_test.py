@@ -6,7 +6,7 @@ import stats
 class DistFunctionsTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.test = stats(100)
+        self.test = stats.stats(100)
 
 class DistArraySizeTestCase(DistFunctionsTestCase):
 
@@ -21,4 +21,4 @@ class DistArrayMaxTestCase(DistFunctionsTestCase):
 
 # runs the unit test
 if __name__ == '__main__':
-    unittest.main();
+    unittest.main()
