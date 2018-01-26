@@ -1,24 +1,22 @@
-import unittest
-import sys
-sys.path.append("../dist_functions/")
-import stats
+from dist_functions import stats
+from unittest import TestCase
 
-class DistFunctionsTestCase(unittest.TestCase):
+
+class TesterStats(TestCase):
 
     def setUp(self):
-        self.test = stats.stats(100)
+        self.test = stats.Stats(100)
 
-class DistArraySizeTestCase(DistFunctionsTestCase):
+    def tearDown(self):
+        self.test = None
 
-    def runTest(self):
-        self.assertEqual(len(self.test.Dist_Array),100)
+    def test_DistArraySize(self):
+        # print("Array Size:")
+        # print(self.test.Dist_Array)
+        self.assertEqual(len(self.test.Dist_Array), 100, 'Array not correct size')
 
-class DistArrayMaxTestCase(DistFunctionsTestCase):
-
-    def runTest(self):
+    def test_DistArrayMax(self):
+        # print("Array Max:")
+        # print(self.test.Dist_Array)
         for x in self.test.Dist_Array:
-            self.assertTrue(x <= 1.25 * 10000000)
-
-# runs the unit test
-if __name__ == '__main__':
-    unittest.main()
+            self.assertLessEqual(x, 1.25*10000000, 'Value larger than Max')
