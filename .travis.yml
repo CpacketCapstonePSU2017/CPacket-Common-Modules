@@ -1,8 +1,10 @@
-sudo: false
+sudo: true
 language: python
 
 env:
-  - PYTHON_VERSION=3.6
+  global:
+    - PYTHON_VERSION=3.6
+    - TRAVIS=TRUE
   
 before_install:
   - wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
@@ -18,9 +20,11 @@ install:
   - pip install coveralls
   - pip install nose
   - pip install progressbar2
-  - pip install boto3
-  - pip install awscli --upgrade --user
-
+  - curl -sL https://repos.influxdata.com/influxdb.key | sudo apt-key add -
+  - source /etc/lsb-release
+  - echo "deb https://repos.influxdata.com/${DISTRIB_ID,,} ${DISTRIB_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/influxdb.list
+  - sudo apt-get update && sudo apt-get install influxdb
+  - sudo service influxdb start
   #- pip install
   #- pip install sklearn matplotlib pydot dill pathos sqlalchemy #PyAF deppendencies along with scipy and pandas
   #- pip install --upgrade git+git://github.com/antoinecarme/pyaf.git #PyAF
