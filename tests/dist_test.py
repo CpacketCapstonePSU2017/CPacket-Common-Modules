@@ -1,4 +1,4 @@
-import dist_functions.stats
+import dist_functions.stats as stats
 from unittest import TestCase
 
 
