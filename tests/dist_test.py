@@ -1,4 +1,4 @@
-from dist_functions import stats
+from io_framework.dist_functions import stats
 from unittest import TestCase
 
 
