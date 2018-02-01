@@ -1,0 +1,28 @@
+from resources.config import RESOURCES_DIR
+from unittest import TestCase
+import os
+from io_framework.csv_to_dataframe import csv_to_dataframe
+
+class TestCsvDf(TestCase):
+   filepath = RESOURCES_DIR + "/" + 'temp.csv'
+   start = 0
+   end = 4
+
+
+   def test_csv_to_df(self):
+       df = csv_to_dataframe(self.filepath, self.start, self.end)
+
+       #print(df.iloc[:5, :2])
+       compare_file = RESOURCES_DIR + "/" + 'compare.csv'
+       df.to_csv(compare_file)
+       with open(self.filepath) as f1:
+           next(f1)
+           string_one = next(f1)
+           sone = string_one
+       with open(compare_file) as f2:
+           next(f2)
+           string_two = next(f2)
+           stwo = string_two.lstrip('0,/')
+
+       os.remove(compare_file)
+       self.assertEqual(sone, stwo,"Test failed not equal")
