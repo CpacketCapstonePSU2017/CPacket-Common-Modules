@@ -2,8 +2,7 @@ import pandas as pd
 import os
 from resources.config import RESOURCES_DIR
 
-
-def csv_to_dataframe(filepath, row_start, row_end):
+def csv_to_dataframe(filepath=(RESOURCES_DIR + "/" + 'input.csv'), row_start=0, row_end=None, dlt=False):
     """
     The parameters to convert a csv file into a dataframe.
     :param filepath: Location of the file in a directory(dependent on linux and windows file systems)
@@ -28,5 +27,7 @@ def csv_to_dataframe(filepath, row_start, row_end):
     else:
         rows_to_read = None
     df = df.read_csv(copyfilepath, header=None, nrows=rows_to_read, names=["", "avg_hrcrx_max_byt"])
+    if dlt is True:
+        os.remove(RESOURCES_DIR + "/" + 'input.csv')
     os.remove(copyfilepath)
     return df
