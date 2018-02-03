@@ -13,7 +13,7 @@ class TestCsvDf(TestCase):
                           new_cvs_file_name="")
 
     def test_csv_to_df(self):
-        df = self.csvWriter.csv_file_to_dataframe(new_filepath=self.filepath, new_row_start=self.start, new_row_end=self.end, delete=self.dlt)
+        df = self.csvWriter.csv_file_to_dataframe(new_filepath=self.filepath, new_row_start=self.start, new_row_end=self.end, delete=self.dlt, usecols=[0,1])
         compare_file = os.path.join(RESOURCES_DIR,'compare.csv')
         df.to_csv(compare_file)
         with open(self.filepath) as f1:
@@ -30,8 +30,8 @@ class TestCsvDf(TestCase):
 
     def test_invalid_parameters(self):
         with self.assertRaises(FileNotFoundError):
-            df = csv_to_dataframe(filepath="aqqa", row_start=self.start, row_end=self.end, dlt=self.dlt)
+            df = csv_to_dataframe(filepath="aqqa", row_start=self.start, row_end=self.end, dlt=self.dlt, usecols=[0,1])
 
         with self.assertRaises(StopIteration):
             self.start=100000000
-            df = csv_to_dataframe(filepath=self.filepath, row_start=self.start, row_end=self.end, dlt=self.dlt)
+            df = csv_to_dataframe(filepath=self.filepath, row_start=self.start, row_end=self.end, dlt=self.dlt, usecols=[0,1])
