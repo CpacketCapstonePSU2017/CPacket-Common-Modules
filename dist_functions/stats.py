@@ -32,16 +32,12 @@ class Stats:
             if self._Max is None:
                 # TODO: Could be moved to non-hardcoded value.
                 self._Max = 1.25 * 10000000
-                lamda = self._Max - (self._Max / 4)
-            
-                # TODO: error check Max and Size
-                self.Dist_Array = np.random.poisson(lam=lamda, size=self._Size)
-                for x in self.Dist_Array:
-                    if x > self._Max:
-                        # print x
-                        x = self._Max
-    
-    # Used for getting a second byte count later in development
-    def newByteCount(self):
-        # Dummy for testing to have index changed properly
-        return self._DistArray[np.random.randint(0,self.Size)]
+
+            lamda = self._Max - (self._Max / 4)
+
+            # TODO: error check Max and Size
+            self.Dist_Array = np.random.poisson(lam=lamda, size=self._Size)
+            for x in self.Dist_Array:
+                if x > self._Max:
+                    # print(x)
+                    x = self._Max
