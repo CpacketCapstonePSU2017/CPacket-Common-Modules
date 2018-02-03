@@ -89,15 +89,16 @@ class CsvWriter:
                    filepath=new_csv_file_name, measurement=measurement_to_use,
                    label_to_use=new_label_to_use, field_name_to_use=new_field_name_to_use, drop_db=drop_db)
 
-    def csv_file_to_dataframe(self,new_filepath, new_row_start=0, new_row_end=None, delete=False):
+    def csv_file_to_dataframe(self,new_filepath, new_row_start=0, new_row_end=None, delete=False, usecols=[0, 2]):
         """
         The parameters to convert a csv file into a dataframe.
         :param new_filepath: Location of the file in a directory(dependent on linux and windows file systems)
         :param new_row_start: A row to start reading data from
         :param new_row_end: What row to end on
         :param delete: do you want to delete a new copytemp.csv
+        :param usecols: columns to use in csv file
         :return: dataframe
         """
         if not new_filepath:
             new_filepath=os.path.join(RESOURCES_DIR,'temp.csv')
-        return write_dataframe(new_filepath=new_filepath, new_row_start=new_row_start, new_row_end=new_row_end, delete=delete)
+        return write_dataframe(new_filepath=new_filepath, new_row_start=new_row_start, new_row_end=new_row_end, delete=delete, usecols=usecols)
