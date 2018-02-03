@@ -26,7 +26,7 @@ def csv_to_dataframe(filepath=(RESOURCES_DIR + "/" + 'input.csv'), row_start=0, 
         rows_to_read = row_end - row_start
     else:
         rows_to_read = None
-    df = df.read_csv(copyfilepath, header=None, nrows=rows_to_read, names=["", "avg_hrcrx_max_byt"])
+    df = df.read_csv(copyfilepath, header=None, names=["", "avg_hrcrx_max_byt"],usecols= ["", "avg_hrcrx_max_byt"], nrows=rows_to_read)
     if dlt is True:
         os.remove(RESOURCES_DIR + "/" + 'input.csv')
     os.remove(copyfilepath)

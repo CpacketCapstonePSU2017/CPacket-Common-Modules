@@ -16,6 +16,7 @@ class TestCsvDf(TestCase):
        #print(df.iloc[:5, :2])
        compare_file = RESOURCES_DIR + "/" + 'compare.csv'
        df.to_csv(compare_file)
+       print(df)
        with open(self.filepath) as f1:
            next(f1)
            string_one = next(f1)
@@ -24,6 +25,7 @@ class TestCsvDf(TestCase):
            next(f2)
            string_two = next(f2)
            stwo = string_two.lstrip('0,/')
+           #print(string_two)
 
        os.remove(compare_file)
        self.assertEqual(sone, stwo,"The specified function test failed, not equal")
