@@ -2,7 +2,7 @@ import pandas as pd
 import os
 from resources.config import RESOURCES_DIR
 
-def csv_to_dataframe(filepath, row_start, row_end, dlt):
+def csv_to_dataframe(filepath, row_start, row_end, dlt, usecols):
     """
     The parameters to convert a csv file into a dataframe.
     :param filepath: Location of the file in a directory(dependent on linux and windows file systems)
@@ -26,7 +26,7 @@ def csv_to_dataframe(filepath, row_start, row_end, dlt):
             rows_to_read = row_end - row_start
         else:
             rows_to_read = None
-        df = df.read_csv(copyfilepath, header=None, names=["", "avg_hrcrx_max_byt"],usecols= ["", "avg_hrcrx_max_byt"], nrows=rows_to_read)
+        df = df.read_csv(copyfilepath, header=None, names=["", "avg_hrcrx_max_byt"],usecols=usecols, nrows=rows_to_read)
         if dlt is True:
             os.remove(filepath)
         os.remove(copyfilepath)
@@ -41,5 +41,5 @@ def csv_to_dataframe(filepath, row_start, row_end, dlt):
         raise StopIteration
     return df
 
-def write_dataframe(new_filepath, new_row_start, new_row_end, delete):
-    return csv_to_dataframe(filepath=new_filepath, row_start=new_row_start, row_end=new_row_end, dlt=delete)
+def write_dataframe(new_filepath, new_row_start, new_row_end, delete, usecols):
+    return csv_to_dataframe(filepath=new_filepath, row_start=new_row_start, row_end=new_row_end, dlt=delete, usecols=usecols)
