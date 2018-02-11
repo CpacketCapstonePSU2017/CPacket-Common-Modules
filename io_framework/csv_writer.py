@@ -108,19 +108,11 @@ class CsvWriter:
         """
         The parameters to convert a csv file into a dataframe.
         :param new_filepath: Location of the file in a directory(dependent on linux and windows file systems)
-        :param new_row_start: A row to start reading data from
-        :param new_row_end: What row to end on
-        :param delete: do you want to delete a new copytemp.csv
+        :param start_date: pd timestamp object with the start date inclusive
+        :param end_date: pd timestamp object with the end date inclusive
         :param usecols: columns to use in csv file
         :return: dataframe
         """
         if not filepath:
             return None
         return read_dataframe_date_selection(new_filepath=filepath, usecols=usecols,start_date=start_date, end_date=end_date)
-
-csvWriter = CsvWriter(host="", port=0, username="", password="", database="", new_measurement="",
-                                   new_cvs_file_name="")
-
-a = csvWriter.csv_file_to_dataframe_date_selection(filepath="/Users/hERO/Documents/CS/Capstone/CodeStuff/Predictor/predictor_resources/AccessPoint#3(Aruba3)Outgoing.csv", start_date=pd.Timestamp("2016-12-06 00:45:00"), end_date=pd.Timestamp("2016-12-06 08:15:00"))
-
-print(np.array(a))
