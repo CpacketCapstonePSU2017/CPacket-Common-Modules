@@ -41,5 +41,20 @@ def csv_to_dataframe(filepath, row_start, row_end, dlt, usecols):
         raise StopIteration
     return df
 
+
 def write_dataframe(new_filepath, new_row_start, new_row_end, delete, usecols):
     return csv_to_dataframe(filepath=new_filepath, row_start=new_row_start, row_end=new_row_end, dlt=delete, usecols=usecols)
+
+
+def csv_to_dataframe_date_selection(file_path, usecols, start_date, end_date):
+    returned_data_frame = pd.read_csv(file_path, header=None, names=["", "avg_hrcrx_max_byt"], usecols=usecols)
+    returned_data_frame[""] = pd.to_datetime(returned_data_frame[""])
+    mask = (returned_data_frame[""] >= start_date.to_pydatetime()) & (returned_data_frame[""] <= end_date.to_pydatetime())
+    returned_data_frame = returned_data_frame.loc[mask]
+    returned_data_frame["avg_hrcrx_max_byt"] = returned_data_frame["avg_hrcrx_max_byt"].astype(float)
+
+    return returned_data_frame
+
+
+def read_dataframe_date_selection(new_filepath, usecols, start_date, end_date):
+    return csv_to_dataframe_date_selection(file_path=new_filepath, usecols=usecols, start_date=start_date, end_date=end_date)
