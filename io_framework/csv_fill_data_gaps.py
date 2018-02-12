@@ -1,3 +1,11 @@
+'''
+This file includes methods that can be used to correct holes in the timeseries data.
+
+Currently, the data points are filled by taking the mean of the surrounding datapoints, once
+a set of one or more time preiods have been identified as mission. This mean will be applied to
+all datapoints within that set.
+'''
+
 import pandas as pd
 import io_framework.csv_to_dataframe as cd
 import os
@@ -26,5 +34,4 @@ def fill(file_path, output_file_path, default_data_points):
     data = data.append(data_to_append)
     data = data.sort_values(by='', kind='mergesort')
     data.to_csv(output_file_path+'dummy.csv', columns=['', 'avg_hrcrx_max_byt'], index=False)
-
     return 1
