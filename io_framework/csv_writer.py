@@ -11,9 +11,10 @@ from influxdb import InfluxDBClient
 import os
 from io_framework.csv_file_to_db import write_data
 from io_framework.csv_to_dataframe import write_dataframe
+from io_framework.csv_to_dataframe import read_dataframe_date_selection
 from io_framework.csv_to_dataframe import csv_to_dataframe
 from resources.config import RESOURCES_DIR
-
+import numpy as np
 
 class CsvWriter:
     _csv_file_path = None
@@ -102,3 +103,16 @@ class CsvWriter:
         if not new_filepath:
             new_filepath=os.path.join(RESOURCES_DIR,'temp.csv')
         return write_dataframe(new_filepath=new_filepath, new_row_start=new_row_start, new_row_end=new_row_end, delete=delete, usecols=usecols)
+
+    def csv_file_to_dataframe_date_selection(self, filepath, start_date, end_date, usecols=[0, 2]):
+        """
+        The parameters to convert a csv file into a dataframe.
+        :param new_filepath: Location of the file in a directory(dependent on linux and windows file systems)
+        :param start_date: pd timestamp object with the start date inclusive
+        :param end_date: pd timestamp object with the end date inclusive
+        :param usecols: columns to use in csv file
+        :return: dataframe
+        """
+        if not filepath:
+            return None
+        return read_dataframe_date_selection(new_filepath=filepath, usecols=usecols,start_date=start_date, end_date=end_date)

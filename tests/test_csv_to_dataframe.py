@@ -2,7 +2,10 @@ from resources.config import RESOURCES_DIR
 from unittest import TestCase
 import os
 from io_framework.csv_to_dataframe import csv_to_dataframe
+from io_framework.csv_to_dataframe import csv_to_dataframe_date_selection
 from io_framework.csv_writer import CsvWriter
+import pandas as pd
+import numpy as np
 
 class TestCsvDf(TestCase):
     filepath = os.path.join(RESOURCES_DIR,'temp.csv')
@@ -35,3 +38,10 @@ class TestCsvDf(TestCase):
         with self.assertRaises(StopIteration):
             self.start=100000000
             df = csv_to_dataframe(filepath=self.filepath, row_start=self.start, row_end=self.end, dlt=self.dlt, usecols=[0,1])
+
+    def test_csv_data_frame(self):
+        a = csv_to_dataframe_date_selection(file_path=self.filepath,usecols=[0, 1], start_date=pd.Timestamp("2017-03-18 00:15:00"), end_date=pd.Timestamp("2017-03-18 00:30:00"))
+        self.assertIsNotNone(a)
+        self.assertEquals(2, len(a))
+        self.assertEquals(875, (np.array(a)[0, 1]))
+        self.assertEquals(894, np.array(a)[1, 1])
