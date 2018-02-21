@@ -48,8 +48,7 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
 
         # Compute the number of seconds between the current (starting) timestamp and the next timestamp
         # The complexity of this section comes from values missing from the start or end of file
-        if compute_start_fill == 1 and counter == 0 and int(
-                (data[''][0] - data[''][0].normalize()).total_seconds() != 0):
+        if compute_start_fill == 1 and counter == 0 and int((data[''][0] - data[''][0].normalize()).total_seconds() != 0):
             min_diff = ((data[''][counter] - data[''][0].normalize()).total_seconds() / 60)
         elif compute_end_fill == 1 and counter == data_size and int((((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][data_size]).total_seconds() != 0):
             min_diff = (((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][counter]).total_seconds() / 60
@@ -67,8 +66,7 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
         if 0 < num_missing_periods <= num_seq_fill_points and counter not in indexes_to_delete:
 
             # Here we compute the initial start time of the new timestamp(s)
-            if compute_start_fill == 1 and counter == 0 and int(
-                                        (data[''][0] - data[''][0].normalize()).total_seconds() != 0):
+            if compute_start_fill == 1 and counter == 0 and int((data[''][0] - data[''][0].normalize()).total_seconds() != 0):
                 num_missing_periods += 1
                 new_row_time = data[''][0].normalize() + pd.Timedelta(minutes=-15)
             elif compute_end_fill == 1 and counter == data_size and int((((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][data_size]).total_seconds() != 0):
@@ -100,7 +98,7 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
 
         # If we see there are too many consecutive missing timestamps, we will delete all the datapoints for
         # the entire week the initial timestamp falls under.
-        if num_missing_periods > 5 and counter not in indexes_to_delete:
+        if num_missing_periods > num_seq_fill_points and counter not in indexes_to_delete:
             day_of_week = data[''][counter].dayofweek
             start_remove_date = data[''][counter].normalize() + pd.Timedelta(days=-day_of_week)
             end_remove_date = data[''][counter].normalize() + pd.Timedelta(days=(7 - day_of_week))
@@ -118,7 +116,8 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
     data = data.sort_values(by='', kind='mergesort')
     data = data.reset_index(drop=True)
 
-    # Output final corrected dataset to disk
+    # If a file was provided output final corrected dataset to disk. If a dataframe was provided
+    # then we will return the corrected dataframe here
     if file_path is not None:
         data.to_csv(file_path, columns=['', 'avg_hrcrx_max_byt'], index=False)
     else:
