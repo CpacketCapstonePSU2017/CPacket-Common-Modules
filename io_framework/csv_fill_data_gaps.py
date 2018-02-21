@@ -3,7 +3,8 @@ This file includes methods that can be used to correct data gaps in timeseries d
 
 Currently, the data points are filled by taking the mean of the surrounding datapoints, once
 a set of one or more time preiods have been identified as missing. This mean will be applied to
-all datapoints within that set. If there is an item
+all datapoints within that set. If there are too many sequental missing timestamps, as specified
+in the file, then the entire weeks data that the starting timestamp falls in will be deleted.
 '''
 
 import pandas as pd
@@ -98,7 +99,7 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
                 num_missing_periods -= 1
 
         # If we see there are too many consecutive missing timestamps, we will delete all the datapoints for
-        # the entire week.
+        # the entire week the initial timestamp falls under.
         if num_missing_periods > 5 and counter not in indexes_to_delete:
             day_of_week = data[''][counter].dayofweek
             start_remove_date = data[''][counter].normalize() + pd.Timedelta(days=-day_of_week)
