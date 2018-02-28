@@ -72,6 +72,8 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
                 compute_starting_week_correction = 0
                 counter += indexes_to_delete.size
                 corrected_start_index = counter
+            else:
+                compute_starting_week_correction = 0
 
         if compute_ending_week_correction == 1:
             start_day_of_week = data[''][data_size].dayofweek
@@ -84,6 +86,8 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
                 indexes_to_delete = np.append(bad_end_indexes, indexes_to_delete)
                 compute_ending_week_correction = 0
                 data_size -= bad_end_indexes.size
+            else:
+                compute_ending_week_correction = 0
 
         # Compute the number of seconds between the current (starting) timestamp and the next timestamp
         # The complexity of this section comes from values missing from the start or end of file

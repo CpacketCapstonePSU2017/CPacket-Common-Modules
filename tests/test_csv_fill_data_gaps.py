@@ -6,6 +6,10 @@ import pandas as pd
 class TesterStats(TestCase):
 
     def setUp(self):
+        self.number_of_datapoints_in_a_week = 672
+
+        self.number_of_datapoints_in_a_day = 96
+
         self.test_df_gaps_with_good_start_values = pd.DataFrame({'': ['2016-12-06 00:00:00',
                                                                       '2016-12-06 00:45:00',
                                                                       '2016-12-06 01:00:00',
@@ -26,6 +30,42 @@ class TesterStats(TestCase):
                                                                                      851.9826087,
                                                                                      814.1648936,
                                                                                      1021.485114
+                                                                                     ]})
+
+        self.test_df_gaps_with_bad_weekday_start = pd.DataFrame({'': ['2016-12-04 00:00:00',
+                                                                      '2016-12-04 00:45:00',
+                                                                      '2016-12-04 01:00:00',
+                                                                      '2016-12-04 01:15:00',
+                                                                      '2016-12-05 00:00:00',
+                                                                      '2016-12-05 00:15:00',
+                                                                      '2016-12-11 23:30:00',
+                                                                      '2016-12-11 23:45:00'
+                                                                      ],
+                                                                 'avg_hrcrx_max_byt': [1078.903686,
+                                                                                       851.9826087,
+                                                                                       814.1648936,
+                                                                                       1021.485114,
+                                                                                       1254.485114,
+                                                                                       1987.485114,
+                                                                                       906.485114,
+                                                                                       998.485114
+                                                                                       ]})
+
+        self.test_df_gaps_with_bad_weekday_end = pd.DataFrame({'': ['2016-12-05 00:00:00',
+                                                                    '2016-12-05 00:15:00',
+                                                                    '2016-12-11 23:30:00',
+                                                                    '2016-12-11 23:45:00',
+                                                                    '2016-12-12 00:00:00',
+                                                                    '2016-12-12 00:15:00',
+                                                                    '2016-12-12 00:30:00',
+                                                                    ],
+                                                               'avg_hrcrx_max_byt': [1078.903686,
+                                                                                     851.9826087,
+                                                                                     814.1648936,
+                                                                                     1021.485114,
+                                                                                     1254.485114,
+                                                                                     1987.485114,
+                                                                                     906.485114
                                                                                      ]})
 
         self.test_df_gaps_with_only_small_gaps = pd.DataFrame({'': ['2016-12-06 00:00:00',
@@ -381,19 +421,29 @@ class TesterStats(TestCase):
     def test_populate_data_gaps_with_no_week_delete_good_start_date(self):
         data = self.test_df_gaps_with_good_start_values
         data = fd.fill_data_gaps(4, num_seq_fill_points=100, init_data=data)
-        self.assertEqual(data.shape[0], 96, 'An incorrect number of timestamps were added to the data')
+        self.assertEqual(data.shape[0], self.number_of_datapoints_in_a_day, 'An incorrect number of timestamps were added to the data')
 
     def test_populate_data_gaps_with_no_week_delete_good_end_date(self):
         data = self.test_df_gaps_with_good_end_values
         data = fd.fill_data_gaps(4, num_seq_fill_points=100, init_data=data)
-        self.assertEqual(data.shape[0], 96, 'An incorrect number of timestamps were added to the data')
+        self.assertEqual(data.shape[0], self.number_of_datapoints_in_a_day, 'An incorrect number of timestamps were added to the data')
 
     def test_populate_data_gaps_with_no_week_delete_full_day_dataset(self):
         data = self.test_df_gaps_with_only_small_gaps
         data = fd.fill_data_gaps(96, init_data=data)
-        self.assertEqual(data.shape[0], 96, 'An incorrect number of timestamps were added to the data')
+        self.assertEqual(data.shape[0], self.number_of_datapoints_in_a_day, 'An incorrect number of timestamps were added to the data')
 
     def test_delete_data_points_when_large_gaps_exist(self):
         data = self.test_df_gaps_with_large_and_short_gaps
         data = fd.fill_data_gaps(96, init_data=data)
-        self.assertEqual(data.shape[0], 0, 'An incorrect number of datapoints were deleted from the data')
+        self.assertEqual(data.shape[0], 0, 'An incorrect number of datapoints were removed from the data')
+
+    def test_delete_data_points_when_start_week_date_is_wrong(self):
+        data = self.test_df_gaps_with_bad_weekday_start
+        data = fd.fill_data_gaps(96, num_seq_fill_points=1000, init_data=data)
+        self.assertEqual(data.shape[0], self.number_of_datapoints_in_a_week, 'An incorrect number of datapoints were removed from the data')
+
+    def test_delete_data_points_when_end_week_date_is_wrong(self):
+        data = self.test_df_gaps_with_bad_weekday_end
+        data = fd.fill_data_gaps(96, num_seq_fill_points=1000, init_data=data)
+        self.assertEqual(data.shape[0], self.number_of_datapoints_in_a_week, 'An incorrect number of datapoints were removed from the data')
