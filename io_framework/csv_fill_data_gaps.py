@@ -12,7 +12,7 @@ through the following sunday will be removed. If the last tiemstamp in the data 
 week (sunday) than timestamps from the last through the proceeding Monday will be removed. This will ensure that only
 full weeks worth of data are included in the corrected dataset
 
-The output dataset will have a count = <number of datapoints in a day> * <days in a week> * <number of weeks remaining>
+The output dataset will have a count = <number of datapoints in a day> * <days in a week> * <number of weeks>
 '''
 
 import pandas as pd
@@ -92,9 +92,9 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
         # Compute the number of seconds between the current (starting) timestamp and the next timestamp
         # The complexity of this section comes from values missing from the start or end of file
         if compute_start_fill == 1 and counter == corrected_start_index and int((data[''][counter] - data[''][counter].normalize()).total_seconds() != 0):
-            min_diff = ((data[''][counter] - data[''][counter].normalize()).total_seconds() / 60)
+            min_diff = ((data[''][counter] - data[''][counter].normalize()).total_seconds() / 60) + 15
         elif compute_end_fill == 1 and counter == data_size and int((((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][data_size]).total_seconds() != 0):
-            min_diff = (((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][counter]).total_seconds() / 60
+            min_diff = ((((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][counter]).total_seconds() / 60) + 15
         elif counter == data_size:
             min_diff = 15
         else:
@@ -110,11 +110,7 @@ def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_
 
             # Here we compute the initial start time of the new timestamp(s)
             if compute_start_fill == 1 and counter == corrected_start_index and int((data[''][counter] - data[''][counter].normalize()).total_seconds() != 0):
-                num_missing_periods += 1
                 new_row_time = data[''][counter].normalize() + pd.Timedelta(minutes=-15)
-            elif compute_end_fill == 1 and counter == data_size and int((((data[''][data_size].normalize() + pd.Timedelta(days=1)) + pd.Timedelta(minutes=-15)) - data[''][data_size]).total_seconds() != 0):
-                num_missing_periods += 1
-                new_row_time = pd.Timestamp(data[''][counter])
             else:
                 new_row_time = pd.Timestamp(data[''][counter])
 
