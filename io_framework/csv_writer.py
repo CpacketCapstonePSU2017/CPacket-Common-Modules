@@ -12,9 +12,8 @@ import os
 from io_framework.csv_file_to_db import write_data
 from io_framework.csv_to_dataframe import write_dataframe
 from io_framework.csv_to_dataframe import read_dataframe_date_selection
-from io_framework.csv_to_dataframe import csv_to_dataframe
+from io_framework.csv_fill_data_gaps import fill_data_gaps
 from resources.config import RESOURCES_DIR
-import numpy as np
 
 class CsvWriter:
     _csv_file_path = None
@@ -71,7 +70,11 @@ class CsvWriter:
                 return False
             if tags_to_drop:
                 df = df.drop(tags_to_drop, axis=1)
-            df.to_csv(new_csv_file_name, sep=separator)
+            df.index = df.index.map(lambda t: t.strftime('%Y-%m-%d %H:%M:%S'))
+            df.reset_index(level=0, inplace=True)
+            df.rename(columns={'index':''},inplace=True)
+            data = fill_data_gaps(init_data=df)
+            data.to_csv(new_csv_file_name, sep=separator)
             return True
         print("The database is empty. Nothing to save to CSV file.")
         return False
@@ -90,7 +93,7 @@ class CsvWriter:
                    filepath=new_csv_file_name, measurement=measurement_to_use,
                    label_to_use=new_label_to_use, field_name_to_use=new_field_name_to_use, drop_db=drop_db)
 
-    def csv_file_to_dataframe(self,new_filepath, new_row_start=0, new_row_end=None, delete=False, usecols=[0, 2]):
+    def csv_file_to_dataframe(self,new_filepath, new_row_start=0, new_row_end=None, delete=False, usecols=[0, 1]):
         """
         The parameters to convert a csv file into a dataframe.
         :param new_filepath: Location of the file in a directory(dependent on linux and windows file systems)
@@ -104,7 +107,7 @@ class CsvWriter:
             new_filepath=os.path.join(RESOURCES_DIR,'temp.csv')
         return write_dataframe(new_filepath=new_filepath, new_row_start=new_row_start, new_row_end=new_row_end, delete=delete, usecols=usecols)
 
-    def csv_file_to_dataframe_date_selection(self, filepath, start_date, end_date, usecols=[0, 2]):
+    def csv_file_to_dataframe_date_selection(self, filepath, start_date, end_date, usecols=[0, 1]):
         """
         The parameters to convert a csv file into a dataframe.
         :param new_filepath: Location of the file in a directory(dependent on linux and windows file systems)

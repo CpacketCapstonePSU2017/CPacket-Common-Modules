@@ -20,7 +20,7 @@ import numpy as np
 import io_framework.csv_to_dataframe as cd
 
 
-def fill_data_gaps(num_data_points, num_seq_fill_points=5, init_data=None, file_path=None):
+def fill_data_gaps(num_data_points=None, num_seq_fill_points=5, init_data=None, file_path=None):
     '''
     :param file_path: The path name for the time series csv file to be analysed and replaced with corrected data.
                         The file must be in the following format: ('': timestamps; 'avg_hrcrx_max_byt': byte count)
