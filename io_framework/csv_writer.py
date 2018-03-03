@@ -49,7 +49,7 @@ class CsvWriter:
         self._database = database
 
     def data_to_csv_file(self, db_query, tags_to_drop=None, is_chunked=True, separator=',',
-                         new_csv_file_name='', measurement_to_use=''):
+                         new_csv_file_name='', measurement_to_use='', fillGaps=True):
         """
         Writes the new CSV file from scratch using the data that comes
         from client in the form of ResultSet. The file is stored in "resources" folder.
@@ -70,11 +70,13 @@ class CsvWriter:
                 return False
             if tags_to_drop:
                 df = df.drop(tags_to_drop, axis=1)
-            df.index = df.index.map(lambda t: t.strftime('%Y-%m-%d %H:%M:%S'))
-            df.reset_index(level=0, inplace=True)
-            df.rename(columns={'index':''},inplace=True)
-            data = fill_data_gaps(init_data=df)
-            data.to_csv(new_csv_file_name, sep=separator)
+            if fillGaps:
+                df.index = df.index.map(lambda t: t.strftime('%Y-%m-%d %H:%M:%S'))
+                df.reset_index(level=0, inplace=True)
+                df.rename(columns={'index':''},inplace=True)
+                df = fill_data_gaps(init_data=df)
+                df.set_index('', inplace=True)
+            df.to_csv(new_csv_file_name, sep=separator)
             return True
         print("The database is empty. Nothing to save to CSV file.")
         return False

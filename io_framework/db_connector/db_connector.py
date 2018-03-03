@@ -51,6 +51,13 @@ class InfluxDBConnector(object):
         """
         return self.client.get_list_database()
 
+    def list_measurements(self):
+        """Get the list of measurements in database in InfluxDB
+
+        :return:
+        """
+        return self.client.get_list_measurements()
+
     def write_points(self, dataframe, measurement,
                      tags=None, tag_columns=None, field_columns=None, time_precision=None, database=None,
                      retention_policy=None, batch_size=None, protocol='line', numeric_precision=None):
