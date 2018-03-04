@@ -28,7 +28,7 @@ class TesterCsvWriter(TestCase):
             initial_data_path = RESOURCES_DIR + "/" + 'temp.csv'
             test_csv_write3 = CsvWriter(self.host, self.port, self.username, self.password, self.database)
             test_csv_write3.csv_file_to_db()
-            test_csv_write3.data_to_csv_file('select * from per15min', new_csv_file_name=data_return_path)
+            test_csv_write3.data_to_csv_file('select * from per15min', new_csv_file_name=data_return_path, fillGaps=False)
             self.assertTrue(self.compare_csv_files(data_return_path, initial_data_path),
                             "Integration test failed, file is not the same")
             os.remove(data_return_path)

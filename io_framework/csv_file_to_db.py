@@ -11,7 +11,7 @@ def csv_file_to_db(host, port, username, password, database, filepath, measureme
     value_index = 1
     iterator = 0
     widgets = [progressbar.Percentage(), progressbar.Bar(), progressbar.ETA()]
-    print("Starting to write cvs data to database: {}".format(database))
+    print("Starting to write csv data to database: {}".format(database))
     with open(filepath) as f:
         data = [x.split(',') for x in f.readlines()]
         bar = progressbar.ProgressBar(widgets=widgets, max_value=len(data)-1).start()
