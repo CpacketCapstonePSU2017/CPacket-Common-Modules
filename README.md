@@ -1,5 +1,23 @@
 # CPacket-Common-Modules
 
+## Prerequisites
+
+You need to install the packages first before using the project. You can use pip:
+
+    * pip install numpy
+    * - pip install pandas
+    * - pip install scipy
+    * - pip install scikit-learn
+    * - pip install matplotlib 
+    * - pip install numpy
+    * - pip install --upgrade git+git://github.com/influxdata/influxdb-python.git
+    * - pip install influxdb
+    * - pip install coverage
+    * - pip install coveralls
+    * - pip install nose
+    * - pip install progressbar2
+
+Or you can install the packages with PyCharm.
 
 ## Before any Commit
 
